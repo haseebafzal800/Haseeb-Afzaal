@@ -363,13 +363,15 @@
     line-height: 18px;
     font-weight: 400;
     padding: 10px;
+        color:#000;
+        border:0.5px solid #000;
+        cursor:pointer;
 }
-        .color-swatch:hover, .color-swatch.selected { border-color: black; }
-        .color-swatch.selected { color: #000; }
-        .color-swatch.white { background-color: white; color: black; }
-        .color-swatch.black { background-color: black; color: white; }
-        .color-swatch.red { background-color: red; }
-        .color-swatch.blue { background-color: blue; }
+        .color-swatch:hover, .color-swatch.selected {
+    border-color: black;
+    background-color: #000 !important;
+    color: #fff !important;
+}
         .size-dropdown-container { margin-bottom: 50px; text-align: left; }
         .size-dropdown-container select { width: 100%; padding: 8px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px; }
 
