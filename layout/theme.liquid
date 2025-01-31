@@ -348,17 +348,29 @@
     font-size: 14px;
     line-height: 15.4px;
 }
+      #popupVariants label {
+    font-size: 14px;
+    line-height: 18px;
+    margin-bottom: 6px;
+    display: block;
+}
 
-        .color-swatches-container { margin-bottom: 15px; }
-        .color-swatches { display: flex; gap: 12px; margin-top: 8px; flex-wrap: wrap; }
-        .color-swatch { width: 50px; height: 50px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; text-align: center; color: #fff; font-size: 12px; font-weight: bold; border: 2px solid transparent; transition: 0.3s ease; }
+        .color-swatches-container { margin-bottom: 11px;text-align: left; }
+        .color-swatches { display: flex; justify-content: space-between; }
+      .color-swatches .color-swatch {
+    width: calc(100% / 2 - 0px);
+    font-size: 18px;
+    line-height: 18px;
+    font-weight: 400;
+    padding: 10px;
+}
         .color-swatch:hover, .color-swatch.selected { border-color: black; }
         .color-swatch.selected { color: #000; }
         .color-swatch.white { background-color: white; color: black; }
         .color-swatch.black { background-color: black; color: white; }
         .color-swatch.red { background-color: red; }
         .color-swatch.blue { background-color: blue; }
-        .size-dropdown-container { margin-top: 15px; }
+        .size-dropdown-container { margin-bottom: 50px; text-align: left; }
         .size-dropdown-container select { width: 100%; padding: 8px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px; }
 
         
