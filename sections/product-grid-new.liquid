@@ -99,6 +99,12 @@ document.querySelectorAll('.plus-icon').forEach(icon => {
                     } else {
                         const selectElement = document.createElement('select');
                         selectElement.setAttribute('data-variant-type', index);
+                        const defaultOption = document.createElement('option');
+                        defaultOption.value = "";
+                        defaultOption.textContent = "Choose your size";
+                        defaultOption.disabled = true;
+                        defaultOption.selected = true;
+                        selectElement.appendChild(defaultOption);
                         variantGroup.values.forEach(value => {
                             const option = document.createElement('option');
                             option.value = value;
