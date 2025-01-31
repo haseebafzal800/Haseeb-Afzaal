@@ -354,6 +354,18 @@
     margin-bottom: 6px;
     display: block;
 }
+      .color-swatch.white {
+    border-left: 0;
+}
+      .color-swatch.white::after {
+    position: absolute;
+    content: '';
+    background: #000;
+    height: 100%;
+    width: 1px;
+    left: 4.8px;
+    top: 0;
+}
 
         .color-swatches-container { margin-bottom: 11px;text-align: left; }
         .color-swatches { display: flex; justify-content: space-between; }
@@ -366,6 +378,7 @@
         color:#000;
         border:0.5px solid #000;
         cursor:pointer;
+        position:relative;
 }
         .color-swatch:hover, .color-swatch.selected {
     border-color: black;
@@ -373,7 +386,13 @@
     color: #fff !important;
 }
         .size-dropdown-container { margin-bottom: 50px; text-align: left; }
-        .size-dropdown-container select { width: 100%; padding: 8px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px; }
+        .size-dropdown-container select {
+    width: 100%;
+    padding: 10px 13px;
+    font-size: 16px;
+    line-height: 16px;
+    border: 0.5px solid #000;
+}
 
         
         @media (max-width: 767.98px){
