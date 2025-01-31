@@ -86,7 +86,6 @@ document.querySelectorAll('.plus-icon').forEach(icon => {
                             swatch.classList.add('color-swatch');
                             swatch.classList.add(value.toLowerCase());
                             swatch.setAttribute('data-value', value);
-                            swatch.style.backgroundColor = value.toLowerCase();
                             swatch.textContent = value;
                             swatch.addEventListener('click', () => {
                                 document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
