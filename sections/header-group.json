@@ -13,7 +13,11 @@
   "sections": {
     "header": {
       "type": "header",
-      "settings": {}
+      "settings": {
+        "desktop_title": "Find the ideal gifts for your loved ones",
+        "btn_text": "CHOOSE GIFT",
+        "btn_url": ""
+      }
     }
   },
   "order": [
