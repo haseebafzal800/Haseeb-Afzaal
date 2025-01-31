@@ -1,19 +1,92 @@
+{% if section.settings.desktop_bg_img != blank or section.settings.mobile_bg_img != blank %}
+<style>
+  .banner .banner-hold{background-image: url('{{ section.settings.desktop_bg_img | img_url: 'master' }}');}
+  @media (max-width: 767.98px){
+    .banner .banner-hold{background-image: url('{{ section.settings.mobile_bg_img | img_url: 'master' }}');}
+  }
+</style>
+ {% endif%}
+
+{% if section.settings.heading != blank %}
 <div class="banner">
     <div class="mobile-show">
-        <h1>The Gift Guide</h1>
-        <p>Discover Joy: Your Ultimate Holiday Gift Destination</p>
+        <h1>{{ section.settings.heading | escape }}</h1>
+        <p>{{ section.settings.mobile_content | escape }}</p>
     </div>
     <div class="banner-hold">
         <div class="text-hold">
-            <h1 class="desktop-show">The Gift Guide</h1>
-            <p class="desktop-show">Disover Joy: Your Ultimate Holiday Gift Destination. Explore our curated selection and find the perfect gifts to delight your loved ones for this holiday season.</p>
-            <a class="btn" href="#">Shop Now <i class="fa-solid fa-arrow-right-long"></i></a>
+            <h1 class="desktop-show">{{ section.settings.heading | escape }}</h1>
+            <p class="desktop-show">{{ section.settings.desktop_content | escape }}</p>
+            {% if section.settings.btn_url != blank %}<a class="btn" href="{{ section.settings.btn_url | escape }}">{{ section.settings.btn_text | escape }} <i class="fa-solid fa-arrow-right-long"></i></a>{% endif%}
         </div>
     </div>
 </div>
+  {% endif%}
+  {% if section.settings.desktop_line_title != blank or section.settings.mobile_line_title != blank %}
 <div class="line-text">
     <div class="container">
-        <p class="desktop-show"> SUSTAINABLE, ETHICALLY MADE CLOTHES IN SIZES XXL TO 6XL</p>
-        <p class="mobile-show">SUSTAINABLE, ETHICALLY MADE CLOTHES</p>
+        <p class="desktop-show">{{ section.settings.desktop_line_title | escape }}</p>
+        <p class="mobile-show">{{ section.settings.mobile_line_title | escape }}</p>
     </div>
 </div>
+{% endif%}
+
+
+
+{% schema %}
+{
+    "name": "Custom Banner",
+    "settings": [
+        {
+            "type": "image_picker",
+            "id": "desktop_bg_img",
+            "label": "Desktop Background Image"
+        },
+        {
+            "type": "image_picker",
+            "id": "mobile_bg_img",
+            "label": "Mobile Background Image"
+        },
+        {
+            "type": "text",
+            "id": "heading",
+            "label": "Add Heading"
+        },
+        {
+            "type": "text",
+            "id": "desktop_content",
+            "label": "Desktop Content"
+        },
+        {
+            "type": "text",
+            "id": "mobile_content",
+            "label": "Mobile Content"
+        },
+        {
+            "type": "text",
+            "id": "btn_text",
+            "label": "Button Text"
+        },
+        {
+            "type": "url",
+            "id": "btn_url",
+            "label": "Button Url"
+        },
+        {
+            "type": "text",
+            "id": "desktop_line_title",
+            "label": "Bottom Desktop Text"
+        },
+        {
+            "type": "text",
+            "id": "mobile_line_title",
+            "label": "Bottom Mobile Text"
+        }
+    ],
+    "presets": [
+        {
+            "name": "Custom Banner"
+        }
+    ]
+}
+{% endschema %}

@@ -1,38 +1,207 @@
-<div class=""product-grid">
-    <div class="container">
-        <h2>Tisso vission in the wild</h2>
-        <div class="grid-container">
-            <div class="grid-item" data-title="Product 1" data-description="This is product 1 description." data-image="product-image.png">
-                <img src="product-image.png" alt="Product Image">
-                <div class="plus-icon">+</div>
+<div class="product-grid">
+   <div class="container">
+      {% if section.settings.heading != blank %}
+      <h2>{{ section.settings.heading }}</h2>
+      {% endif %}
+      <div class="grid-container">
+         {% for block in section.blocks %}
+         {% assign product = all_products[block.settings.product] %}
+         {% if product %}
+         <div class="grid-item" data-title="{{ product.title }}" data-price="{{ product.price | money }}" data-description="{{ product.description }}" data-image="{{ product.featured_image | img_url: 'master' }}" data-product-handle="{{ product.handle }}">
+            <img src="{{ product.featured_image | img_url: 'master' }}" alt="{{ product.title }}">
+            <div class="plus-icon">+</div>
+         </div>
+         {% endif %}
+         {% endfor %}
+      </div>
+      <div class="popup" id="productPopup">
+         <div class="popup-content">
+            <span class="popup-close">&times;</span>
+            <div class="pro-info">
+               <div class="product-img">
+                  <img id="popupImage" src="" alt="">
+               </div>
+               <div class="product-content">
+                  <h2 id="popupTitle"></h2>
+                  <div id="productprice"></div>
+                  <div id="popupDescription"></div>
+               </div>
             </div>
-                <div class="grid-item" data-title="Product 2" data-description="This is product 2 description." data-image="product-image.png">
-                <img src="product-image.png" alt="Product Image">
-                <div class="plus-icon">+</div>
-            </div>
-                <div class="grid-item" data-title="Product 3" data-description="This is product 3 description." data-image="product-image.png">
-                <img src="product-image.png" alt="Product Image">
-                <div class="plus-icon">+</div>
-            </div>
-                <div class="grid-item" data-title="Product 4" data-description="This is product 4 description." data-image="product-image.png">
-                <img src="product-image.png" alt="Product Image">
-                <div class="plus-icon">+</div>
-            </div>
-                <div class="grid-item" data-title="Product 5" data-description="This is product 5 description." data-image="product-image.png">
-                <img src="product-image.png" alt="Product Image">
-                <div class="plus-icon">+</div>
-            </div>
-                <div class="grid-item" data-title="Product 6" data-description="This is product 6 description." data-image="product-image.png">
-                <img src="product-image.png" alt="Product Image">
-                <div class="plus-icon">+</div>
-            </div>
-        </div>
-        <div class="pop-up" id="productPopup">
-            <div class="popup-content">
-                <span class="popup-close">&times;</span>
-                <img id="popupImage" src="" alt="">
-                <h2 id="popupTitle"></h2>
-                <p id="popupDescription"></p>
-            </div>
-    </div>
+            <div id="popupVariants"></div>
+            <button id="addToCartButton" class="btn">Add to Cart  <i class="fa-solid fa-arrow-right-long"></i></button>
+         </div>
+      </div>
+   </div>
 </div>
+
+<script>
+document.querySelector('.popup-close').addEventListener('click', () => {
+    document.getElementById('productPopup').classList.remove('show');
+});
+
+document.getElementById('productPopup').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('productPopup')) {
+        document.getElementById('productPopup').classList.remove('show');
+    }
+});
+
+document.querySelectorAll('.plus-icon').forEach(icon => {
+    icon.addEventListener('click', (event) => {
+        event.stopPropagation();
+        const item = icon.closest('.grid-item');
+        const productHandle = item.getAttribute('data-product-handle');
+        fetch(`/products/${productHandle}.js`)
+            .then(response => response.json())
+            .then(product => {
+                document.getElementById('popupTitle').textContent = product.title;
+                document.getElementById('productprice').innerHTML = item.getAttribute('data-price');
+                document.getElementById('popupDescription').textContent = product.description;
+                document.getElementById('popupImage').src = item.getAttribute('data-image');
+                const variantsContainer = document.getElementById('popupVariants');
+                variantsContainer.innerHTML = '';
+                let colorSwatchesContainer = document.createElement('div');
+                colorSwatchesContainer.classList.add('color-swatches-container');
+                let sizeDropdownContainer = document.createElement('div');
+                sizeDropdownContainer.classList.add('size-dropdown-container');
+                const variantTypes = {};
+                product.variants.forEach(variant => {
+                    variant.options.forEach((option, index) => {
+                        if (!variantTypes[index]) {
+                            variantTypes[index] = { name: product.options[index].name, values: [] };
+                        }
+                        if (!variantTypes[index].values.includes(option)) {
+                            variantTypes[index].values.push(option);
+                        }
+                    });
+                });
+                for (let index in variantTypes) {
+                    const variantGroup = variantTypes[index];
+                    const variantLabel = document.createElement('label');
+                    variantLabel.textContent = variantGroup.name || 'Variant';
+                    if (variantGroup.name.toLowerCase() === 'color') {
+                        const swatchContainer = document.createElement('div');
+                        swatchContainer.classList.add('color-swatches');
+                        variantGroup.values.forEach(value => {
+                            const swatch = document.createElement('div');
+                            swatch.classList.add('color-swatch');
+                            swatch.classList.add(value.toLowerCase());
+                            swatch.setAttribute('data-value', value);
+                            swatch.style.backgroundColor = value.toLowerCase();
+                            swatch.textContent = value;
+                            swatch.addEventListener('click', () => {
+                                document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+                                swatch.classList.add('selected');
+                                swatchContainer.setAttribute('data-selected-color', value);
+                            });
+                            swatchContainer.appendChild(swatch);
+                        });
+                        colorSwatchesContainer.appendChild(variantLabel);
+                        colorSwatchesContainer.appendChild(swatchContainer);
+                    } else {
+                        const selectElement = document.createElement('select');
+                        selectElement.setAttribute('data-variant-type', index);
+                        variantGroup.values.forEach(value => {
+                            const option = document.createElement('option');
+                            option.value = value;
+                            option.textContent = value;
+                            selectElement.appendChild(option);
+                        });
+                        sizeDropdownContainer.appendChild(variantLabel);
+                        sizeDropdownContainer.appendChild(selectElement);
+                    }
+                }
+                variantsContainer.appendChild(colorSwatchesContainer);
+                variantsContainer.appendChild(sizeDropdownContainer);
+                document.getElementById('productPopup').classList.add('show');
+
+                document.getElementById('addToCartButton').addEventListener('click', () => {
+                    const selectedOptions = {};
+                    const variantSelects = document.querySelectorAll('#popupVariants select');
+                    variantSelects.forEach(select => {
+                        const variantType = select.getAttribute('data-variant-type');
+                        selectedOptions[variantType] = select.value;
+                    });
+                    const selectedColor = document.querySelector('.color-swatch.selected')?.getAttribute('data-value');
+                    if (selectedColor) {
+                        selectedOptions[Object.keys(variantTypes).find(index => variantTypes[index].name.toLowerCase() === 'color')] = selectedColor;
+                    }
+                    const selectedVariant = product.variants.find(variant => {
+                        return variant.options.every((option, index) => option === selectedOptions[index]);
+                    });
+                    if (selectedVariant) {
+                        addToCart(selectedVariant.id, selectedOptions);
+                    } else {
+                        alert('Please select a variant.');
+                    }
+                });
+            });
+    });
+});
+
+function addToCart(variantId, selectedOptions) {
+    fetch('/cart/add.js', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            items: [{
+                id: variantId,
+                quantity: 1,
+            }]
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (selectedOptions && selectedOptions[Object.keys(selectedOptions).find(key => selectedOptions[key] === 'Black')] && selectedOptions[Object.keys(selectedOptions).find(key => selectedOptions[key] === 'Medium')]) {
+            fetch('/cart/add.js', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    items: [{
+                        id: '7627468570763',
+                        quantity: 1,
+                    }]
+                })
+            });
+        }
+        window.location.href = '/cart';
+    });
+}
+</script>
+
+
+
+
+{% schema %}
+{
+    "name": "Product Grid",
+    "settings": [
+        {
+            "type": "text",
+            "id": "heading",
+            "label": "Add Heading"
+        }
+    ],
+    "blocks": [
+        {
+            "type": "select",
+            "name": "Add Product",
+            "settings": [
+                {
+                    "type": "product",
+                    "id": "product",
+                    "label": "Select product"
+                }
+            ]
+        }
+    ],
+    "presets": [
+        {
+            "name": "Product Grid"
+        }
+    ]
+}
+{% endschema %}

@@ -1,20 +1,53 @@
-<link rel="stylesheet" href="{{ 'theme.liquid' | asset_url }}" media="print" onload="this.media='all'">
-
+{% if section.settings.logo_img != blank %}
 <header id="header">
   <div class="container">
     <div class="header-hold">
-      <a href="#" id="menu-icon">
+      <a href="javascript:void(0);" id="menu-icon">
       <span></span>
       <span></span>
       <span></span>
       <span></span>
       </a>
-      <div class="logo"><a href="/"><img src="tisso_vision_logo.svg" alt="Tisso Vision Logo"></a></div>
-      <p class="desktop-show">Find the ideal gift for your loved ones.</p>
+      <div class="logo"><a href="/"><img src="{{ section.settings.logo_img | img_url: 'master' }}" alt="Tisso Vision Logo"></a></div>
+      {% if section.settings.desktop_title != blank %}
+      <p class="desktop-show">{{ section.settings.desktop_title | escape }}</p>
+      {% endif%}
+      {% if section.settings.btn_url != blank or section.settings.desktop_title != blank %}
       <div class="text-btn">
-        <p class="mobile-show">Find the ideal gift for you loved ones.</p>
-        <p class="btn chose-gift" href="#"> choose gift <i class="fa-solid fa-arrow-right-long"></i></a>
+        <p class="mobile-show">{{ section.settings.desktop_title | escape }}</p>
+        <a class="btn chose-gift" href="{{ section.settings.btn_url | escape }}"> {{ section.settings.btn_text | escape }} <i class="fa-solid fa-arrow-right-long"></i></a>
         </div>
+      {% endif%}
     </div>
   </div>
 </header>
+{% endif%}
+
+
+{% schema %}
+{
+    "name": "Header",
+    "settings": [
+       {
+            "type": "image_picker",
+            "id": "logo_img",
+            "label": "Logo image"
+        },
+        {
+            "type": "text",
+            "id": "desktop_title",
+            "label": "Add Content"
+        },
+        {
+            "type": "text",
+            "id": "btn_text",
+            "label": "Button Text"
+        },
+        {
+            "type": "url",
+            "id": "btn_url",
+            "label": "Button Url"
+        }
+    ]
+}
+{% endschema %}
