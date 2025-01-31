@@ -102,6 +102,7 @@ document.querySelectorAll('.plus-icon').forEach(icon => {
                         variantGroup.values.forEach(value => {
                             const option = document.createElement('option');
                             option.value = value;
+                            defaultOption.textContent = "Choose your size";
                             option.textContent = value;
                             selectElement.appendChild(option);
                         });
